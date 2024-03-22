@@ -1,3 +1,6 @@
 [submodule "firmware/components/sra-board-component"]
 	path = firmware/components/sra-board-component
 	url = https://github.com/SRA-VJTI/sra-board-component.git
+[submodule "firmware/components/micro_ros_espidf_component/examples/components/sra-board-component"]
+	path = firmware/components/micro_ros_espidf_component/examples/components/sra-board-component
+	url = https://github.com/SRA-VJTI/sra-board-component.git
