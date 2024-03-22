@@ -214,7 +214,7 @@ void setupRos() {
         &subscriber,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-        "/cmd_vel"));
+        "/cmd_vel")); //Subscribe topic here on which you are publishing
 
     // create timer,
     rcl_timer_t timer;
