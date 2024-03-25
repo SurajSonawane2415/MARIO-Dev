@@ -72,15 +72,12 @@ servo_config servo_d = {
 };
 
 // Function forward declarations
-void setupPins();
 void setupRos();
 void cmd_vel_callback(const void *msgin);
 void timer_callback(rcl_timer_t *timer, int64_t last_call_time);
-float fmap(float val, float in_min, float in_max, float out_min, float out_max);
 
 void micro_ros_task(void * arg)
 {
-   setupPins();
    setupRos(); 
 }
 
@@ -200,8 +197,4 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time) {
     } 
 
 
-}
-
-float fmap(float val, float in_min, float in_max, float out_min, float out_max) {
-    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
