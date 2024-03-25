@@ -15,7 +15,7 @@
 
 #include <rmw_microros/rmw_microros.h>
 
-#include "sra_board.h"
+#include "sra_board.h" 
 
 #define TAG "MCPWM_SERVO_CONTROL"
 
@@ -28,34 +28,6 @@
 // Constants
 #define FRAME_TIME 100 // 1000 / FRAME_TIME = FPS
 #define SLEEP_TIME 10
-
-// Constants
-#define FRAME_TIME 100 // 1000 / FRAME_TIME = FPS
-#define SLEEP_TIME 10
-
-// PINS
-#define LED_BUILTIN 33
-#define PIN_LEFT_FORWARD 12
-#define PIN_LEFT_BACKWARD 13
-#define PIN_RIGHT_FORWARD 15
-#define PIN_RIGHT_BACKWARD 14
-
-// PWM Channels (Reserve channel 0 and 1 for camera)
-#define PWM_LEFT_FORWARD LEDC_CHANNEL_2
-#define PWM_LEFT_BACKWARD LEDC_CHANNEL_3
-#define PWM_RIGHT_FORWARD LEDC_CHANNEL_4
-#define PWM_RIGHT_BACKWARD LEDC_CHANNEL_5
-
-// Other PWM settings
-#define PWM_FREQUENCY 50
-#define PWM_RESOLUTION LEDC_TIMER_12_BIT
-#define PWM_TIMER LEDC_TIMER_1
-#define PWM_MODE LEDC_HIGH_SPEED_MODE
-
-// These values are determined by experiment and are unique to every robot
-#define PWM_MOTOR_MIN 750    // The value where the motor starts moving
-#define PWM_MOTOR_MAX 4095   // Full speed (2^12 - 1)
-
 
 geometry_msgs__msg__Twist msg;
 
@@ -128,62 +100,6 @@ void app_main(void)
             NULL);
 }
 
-void setupPins() {
-
-    // Led. Set it to GPIO_MODE_INPUT_OUTPUT, because we want to read back the state we set it to.
-    gpio_reset_pin(LED_BUILTIN);
-    gpio_set_direction(LED_BUILTIN, GPIO_MODE_INPUT_OUTPUT);
-
-    // Configure timer
-    ledc_timer_config_t ledc_timer = {
-        .duty_resolution = PWM_RESOLUTION,
-        .freq_hz = PWM_FREQUENCY,
-        .speed_mode = PWM_MODE,
-        .timer_num = PWM_TIMER,
-        .clk_cfg = LEDC_AUTO_CLK,
-    };
-    ledc_timer_config(&ledc_timer);
-
-    // Configure 4 PWM channels and assign output pins
-    ledc_channel_config_t ledc_channel[4] = {
-        {
-            .channel    = PWM_LEFT_FORWARD,
-            .duty       = 0,
-            .gpio_num   = PIN_LEFT_FORWARD,
-            .speed_mode = PWM_MODE,
-            .hpoint     = 0,
-            .timer_sel  = LEDC_TIMER_1
-        },
-        {
-            .channel    = PWM_LEFT_BACKWARD,
-            .duty       = 0,
-            .gpio_num   = PIN_LEFT_BACKWARD,
-            .speed_mode = PWM_MODE,
-            .hpoint     = 0,
-            .timer_sel  = LEDC_TIMER_1
-        },
-        {
-            .channel    = PWM_RIGHT_FORWARD,
-            .duty       = 0,
-            .gpio_num   = PIN_RIGHT_FORWARD,
-            .speed_mode = PWM_MODE,
-            .hpoint     = 0,
-            .timer_sel  = LEDC_TIMER_1
-        },
-        {
-            .channel    = PWM_RIGHT_BACKWARD,
-            .duty       = 0,
-            .gpio_num   = PIN_RIGHT_BACKWARD,
-            .speed_mode = PWM_MODE,
-            .hpoint     = 0,
-            .timer_sel  = LEDC_TIMER_1
-        },
-    };
-
-    for (int i = 0; i < 4; i++) {
-        ledc_channel_config(&ledc_channel[i]);
-    }
-}
 void setupRos() {
     // Micro ROS
       printf("Angular");
@@ -273,7 +189,7 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time) {
     const int MIN_ANGLE = 0;
     const int MAX_ANGLE = 130;
 
-    // Rotate clockwise or counterclockwise based on the sign of angular velocity
+    // Rotate servo motors according to angular velocity(angle)
     if (angular > 0) {
 			set_angle_servo(&servo_a, angular);
 			set_angle_servo(&servo_b, angular);
@@ -285,10 +201,6 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time) {
 
 
 }
-
-
-// Helper functions
-// -------------------------------------------------------------------
 
 float fmap(float val, float in_min, float in_max, float out_min, float out_max) {
     return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
